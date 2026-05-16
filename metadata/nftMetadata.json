@@ -1,0 +1,15 @@
+{
+    "name": "KalaKriti Artwork #1",
+    "description": "My very first decentralized masterpiece minted via Foundry.",
+    "image": "bafkreihdtg2aiuvhahtpjsdvkygngcocadsibyvc7gfcfg756a4op44tj4",
+    "attributes": [
+        {
+            "trait_type": "Author",
+            "value": "Harsh Butani"
+        },
+        {
+            "trait_type": "Edition",
+            "value": "1 of 1"
+        }
+    ]
+}
