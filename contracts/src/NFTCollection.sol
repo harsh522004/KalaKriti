@@ -30,9 +30,23 @@ contract NFTCollection is ERC721URIStorage, ERC2981, Ownable {
         string memory tokenURI,
         address royaltyReceiver,
         uint96 royaltyFeeNumerator
-    ) external returns (uint256) {}
+    ) external returns (uint256) {
+        if (privateMint && msg.sender != owner()) revert NotAuthorized();
+
+        uint256 tokenId = tokenCounter;
+        tokenCounter++;
+
+        _safeMint(msg.sender, tokenId);
+        _setTokenURI(tokenId, tokenURI);
+        _setTokenRoyalty(tokenId, royaltyReceiver, royaltyFeeNumerator);
+
+        emit NFTMinted(tokenId, msg.sender);
+        return tokenId;
+    }
 
     function supportsInterface(bytes4 interfaceId)
         public view override(ERC721URIStorage, ERC2981) returns (bool)
-    {}
+    {
+        return super.supportsInterface(interfaceId);
+    }
 }
