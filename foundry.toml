@@ -4,3 +4,4 @@ test = "contracts/test"
 script = "contracts/script"
 out = "out"
 libs = ["lib"]
+fs_permissions = [{ access = "write", path = "./shared/" }]
