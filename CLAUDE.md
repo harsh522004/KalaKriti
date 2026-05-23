@@ -114,6 +114,17 @@ knowledge_Base/  ← Reference docs (do not edit)
 - Never commit `.env` — use `.env.example` for documentation
 - **Never push to GitHub** — always stop before `git push`, user handles all pushes
 
+### Running Forge/Cast/Anvil (Windows + WSL)
+Foundry is installed in WSL at `/home/harsh/.foundry/bin/`. Always run via:
+```bash
+wsl -e bash -c "export PATH=\$HOME/.foundry/bin:\$PATH && cd /mnt/h/devlopement/web3/KalaKriti && <command>"
+```
+To load `.env` vars in the same command, prefix with `source .env &&`.
+Project H: drive maps to `/mnt/h/` in WSL.
+
+### OpenZeppelin
+OZ v5.6.1 installed via npm in `node_modules/`. Remapping: `@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/`. Do NOT run `forge install` for OZ — use npm.
+
 ### Testing (Foundry)
 - Every public/external contract function has at least one test
 - Test edge cases: wrong caller, wrong payment, already-listed, etc.
