@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // URL is defined in prisma.config.ts — do NOT add url here in Prisma 7
+}
+
+model Collection {
+  address     String    @id
+  owner       String
+  name        String
+  symbol      String
+  metadataURI String
+  privateMint Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  nfts        NFT[]
+  listings    Listing[]
+}
+
+// tokenId uses Int (safe for this project; max 2,147,483,647 tokens per collection)
+model NFT {
+  id                String     @id @default(cuid())
+  tokenId           Int
+  collectionAddress String
+  owner             String
+  creator           String
+  tokenURI          String
+  royaltyPct        Int        @default(0)
+  isListed          Boolean    @default(false)
+  collection        Collection @relation(fields: [collectionAddress], references: [address])
+
+  @@unique([tokenId, collectionAddress])
+}
+
+model Listing {
+  listingId         Int        @id
+  collectionAddress String
+  tokenId           Int
+  seller            String
+  price             String     // wei amount as decimal string (avoids JS BigInt overflow)
+  active            Boolean    @default(true)
+  createdAt         DateTime   @default(now())
+  collection        Collection @relation(fields: [collectionAddress], references: [address])
+}
+
+model Activity {
+  id                String   @id @default(cuid())
+  type              String   // "mint" | "list" | "sale" | "cancel" | "transfer"
+  actor             String
+  tokenId           Int
+  collectionAddress String
+  price             String?  // null for non-sale activities
+  txHash            String
+  timestamp         DateTime @default(now())
+}
+
+// Single-row table tracking last processed block for event replay on restart
+model Checkpoint {
+  id        Int    @id @default(1)
+  lastBlock BigInt @default(0)
+}
