@@ -6,7 +6,7 @@
 
 **Architecture:** A polling listener fetches blockchain logs every 12 seconds using viem's `getLogs`, processes them into PostgreSQL via Prisma, and checkpoints the last processed block for replay on restart. Express routes query the DB to serve collections, NFTs, listings, and activity feeds.
 
-**Tech Stack:** Node.js 20, TypeScript 5 (strict), Express 4, Prisma 5, PostgreSQL 15, viem 2, Jest 29, supertest
+**Tech Stack:** Node.js 24 LTS, TypeScript 5 (strict), Express 5.2, Prisma 7 (7.6.0), PostgreSQL 18 (Neon), viem 2, Jest 29, supertest
 
 ---
 
@@ -53,6 +53,7 @@ backend/
         marketplace.listener.test.ts
   prisma/
     schema.prisma
+  prisma.config.ts                           ← Prisma 7: database URL lives here (not in schema.prisma)
   package.json
   tsconfig.json
   jest.config.ts
@@ -93,22 +94,22 @@ New-Item -ItemType Directory -Force backend/src/db, backend/src/services, backen
     "db:generate": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^5.14.0",
+    "@prisma/client": "^7.6.0",
     "dotenv": "^16.4.5",
-    "express": "^4.18.2",
+    "express": "^5.2.0",
     "viem": "^2.17.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
+    "@types/express": "^5.0.0",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.0",
+    "@types/node": "^24.0.0",
     "@types/supertest": "^6.0.2",
     "nodemon": "^3.1.3",
-    "prisma": "^5.14.0",
+    "prisma": "^7.6.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.7.0"
   }
 }
 ```
@@ -155,7 +156,7 @@ export default {
 - [ ] **Step 6: Create `backend/.env.example`**
 
 ```
-DATABASE_URL=postgresql://postgres:password@localhost:5432/kalakriti
+DATABASE_URL=postgresql://user:pass@ep-xxx.region.aws.neon.tech/kalakriti?sslmode=require
 SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY
 FACTORY_ADDRESS=0xC6848D1F9B06995f01E2455a4e06deE7B32dA030
 MARKETPLACE_ADDRESS=0xE59fB714CAa715E64Bb991F1F5E9709324373eE7
@@ -163,12 +164,14 @@ DEPLOY_BLOCK=10927023
 PORT=3001
 ```
 
-Copy to `.env` and fill in `DATABASE_URL` (point at your local PostgreSQL) and `SEPOLIA_RPC_URL` (your Alchemy key from the project `.env`).
+Copy to `.env`. For `DATABASE_URL`: sign up free at [neon.tech](https://neon.tech) → create project → copy the connection string (it already includes `?sslmode=require`). For `SEPOLIA_RPC_URL`: copy from the root project `.env`.
 
 - [ ] **Step 7: Create `backend/src/app.ts`**
 
+> Express 5 automatically catches errors thrown in async route handlers and forwards them to error middleware — no try/catch needed in routes.
+
 ```typescript
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import collectionsRouter from './routes/collections';
 import nftsRouter from './routes/nfts';
 import listingsRouter from './routes/listings';
@@ -187,6 +190,12 @@ app.use('/collections', collectionsRouter);
 app.use('/nfts', nftsRouter);
 app.use('/listings', listingsRouter);
 app.use('/activities', activitiesRouter);
+
+// Global error handler — Express 5 auto-forwards async route errors here
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(err);
+  res.status(500).json({ error: 'Internal server error' });
+});
 
 export function startServer(port = 3001) {
   return app.listen(port, () => {
@@ -276,6 +285,8 @@ cd .. && git add backend/ && git commit -m "chore(backend): project setup with E
 
 - [ ] **Step 1: Create `backend/prisma/schema.prisma`**
 
+> **Prisma 7 breaking change:** The `url` is no longer in `schema.prisma`. It moves to `prisma.config.ts` (next step).
+
 ```prisma
 generator client {
   provider = "prisma-client-js"
@@ -283,7 +294,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // URL is defined in prisma.config.ts — do NOT add url here in Prisma 7
 }
 
 model Collection {
@@ -342,17 +353,28 @@ model Checkpoint {
 }
 ```
 
-- [ ] **Step 2: Ensure PostgreSQL is running and your `.env` DATABASE_URL is set**
+- [ ] **Step 2: Create `backend/prisma.config.ts`**
 
-For local PostgreSQL (Windows), start the service, then create the database:
-```sql
--- In psql or pgAdmin:
-CREATE DATABASE kalakriti;
+Prisma 7 reads the database URL from this file (not from `schema.prisma`):
+
+```typescript
+import { defineConfig } from '@prisma/config';
+
+export default defineConfig({
+  datasource: {
+    url: process.env.DATABASE_URL!,
+  },
+});
 ```
 
-Or use a free cloud DB (Supabase at supabase.com — free tier, no credit card). Copy the connection string into `.env`.
+- [ ] **Step 3: Set up Neon PostgreSQL (free, no install needed)**
 
-- [ ] **Step 3: Run the migration**
+1. Go to [neon.tech](https://neon.tech) → sign up free (no credit card)
+2. Create a new project → name it `kalakriti`
+3. Copy the connection string — looks like: `postgresql://user:pass@ep-xxx.region.aws.neon.tech/kalakriti?sslmode=require`
+4. Paste it into `backend/.env` as `DATABASE_URL`
+
+- [ ] **Step 4: Run the migration**
 
 ```powershell
 cd backend && npx prisma migrate dev --name init
@@ -365,7 +387,7 @@ Your database is now in sync with your schema.
 Generated Prisma Client
 ```
 
-- [ ] **Step 4: Verify tables were created**
+- [ ] **Step 5: Verify tables were created**
 
 ```powershell
 cd backend && npx prisma studio
@@ -373,18 +395,22 @@ cd backend && npx prisma studio
 
 Opens a browser UI. Confirm these tables exist: `Collection`, `NFT`, `Listing`, `Activity`, `Checkpoint`. Close Prisma Studio.
 
-- [ ] **Step 5: Create `backend/src/db/client.ts`**
+- [ ] **Step 6: Create `backend/src/db/client.ts`**
 
 ```typescript
 import { PrismaClient } from '@prisma/client';
 
-export const prisma = new PrismaClient();
+// Pass datasourceUrl explicitly — Prisma 7 reads URL from prisma.config.ts for CLI,
+// but the runtime client needs it passed directly or via env.
+export const prisma = new PrismaClient({
+  datasourceUrl: process.env.DATABASE_URL,
+});
 ```
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```powershell
-cd .. && git add backend/prisma/ backend/src/db/ && git commit -m "feat(backend): add Prisma schema and initial migration"
+cd .. && git add backend/prisma/ backend/prisma.config.ts backend/src/db/ && git commit -m "feat(backend): add Prisma schema and initial migration"
 ```
 
 ---
