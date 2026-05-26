@@ -1,6 +1,6 @@
 {
   "sepolia": {
-    "CollectionFactory": "",
-    "Marketplace": ""
+    "CollectionFactory": "0xC6848D1F9B06995f01E2455a4e06deE7B32dA030",
+    "Marketplace": "0xE59fB714CAa715E64Bb991F1F5E9709324373eE7"
   }
 }
