@@ -7,6 +7,7 @@ import { processMarketplaceLogs } from './marketplace.listener';
 
 const DEPLOY_BLOCK = BigInt(process.env.DEPLOY_BLOCK ?? '0');
 const POLL_INTERVAL_MS = 12_000;
+const CHUNK_SIZE = 10n; // Alchemy free tier: max 10 blocks per getLogs request
 
 export async function startListeners() {
   console.log('Event listeners starting...');
@@ -23,14 +24,21 @@ async function poll() {
 
   console.log(`Syncing blocks ${fromBlock}–${currentBlock}...`);
 
-  await processFactoryLogs(fromBlock, currentBlock);
+  for (let chunkFrom = fromBlock; chunkFrom <= currentBlock; chunkFrom += CHUNK_SIZE) {
+    const chunkTo = chunkFrom + CHUNK_SIZE - 1n < currentBlock
+      ? chunkFrom + CHUNK_SIZE - 1n
+      : currentBlock;
 
-  const collections = await prisma.collection.findMany({ select: { address: true } });
-  const addresses = collections.map((c) => c.address as `0x${string}`);
-  await processNFTLogs(addresses, fromBlock, currentBlock);
+    await processFactoryLogs(chunkFrom, chunkTo);
 
-  await processMarketplaceLogs(fromBlock, currentBlock);
+    const collections = await prisma.collection.findMany({ select: { address: true } });
+    const addresses = collections.map((c) => c.address as `0x${string}`);
+    await processNFTLogs(addresses, chunkFrom, chunkTo);
 
-  await setLastBlock(currentBlock);
+    await processMarketplaceLogs(chunkFrom, chunkTo);
+
+    await setLastBlock(chunkTo);
+  }
+
   console.log(`Synced to block ${currentBlock}`);
 }
