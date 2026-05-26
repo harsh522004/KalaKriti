@@ -149,16 +149,20 @@ WALLETCONNECT_PROJECT_ID= # Added in Phase 3
 
 ## Deployed Contract Addresses
 
-Populated after Phase 1.4 deployment. Stored in `shared/addresses.json`.
+Deployed to Sepolia on 2026-05-26. Stored in `shared/addresses.json`.
 
 ```json
 {
   "sepolia": {
-    "CollectionFactory": "",
-    "Marketplace": ""
+    "CollectionFactory": "0xC6848D1F9B06995f01E2455a4e06deE7B32dA030",
+    "Marketplace": "0xE59fB714CAa715E64Bb991F1F5E9709324373eE7"
   }
 }
 ```
+
+Etherscan:
+- CollectionFactory: https://sepolia.etherscan.io/address/0xC6848D1F9B06995f01E2455a4e06deE7B32dA030
+- Marketplace: https://sepolia.etherscan.io/address/0xE59fB714CAa715E64Bb991F1F5E9709324373eE7
 
 ---
 
@@ -170,4 +174,4 @@ _Updated as we build. Empty for now — first entry goes here when we hit our fi
 
 ## Current Phase
 
-**Next up: Phase 0 — Foundation & Cleanup**
+**Phase 1 (Contracts) complete. Next: Phase 2 — Backend Indexer**
