@@ -46,7 +46,7 @@ remappings.txt               ← updated with forge-std remapping
 - Create: `shared/addresses.json`, `shared/abis/.gitkeep`
 - Delete: `src/`, `test/`, `script/`, `metadata/` (empty dirs)
 
-- [ ] **Step 1: Remove old empty directories and create new structure**
+- [x] **Step 1: Remove old empty directories and create new structure**
 
 ```powershell
 # Remove old empty dirs (files already deleted from git in prev commit)
@@ -56,7 +56,7 @@ Remove-Item -Recurse -Force src, test, script, metadata -ErrorAction SilentlyCon
 New-Item -ItemType Directory -Force contracts/src, contracts/test, contracts/script, shared/abis
 ```
 
-- [ ] **Step 2: Update `foundry.toml`**
+- [x] **Step 2: Update `foundry.toml`**
 
 Replace the entire file content with:
 
@@ -69,7 +69,7 @@ out = "out"
 libs = ["lib"]
 ```
 
-- [ ] **Step 3: Update `remappings.txt`**
+- [x] **Step 3: Update `remappings.txt`**
 
 Replace the entire file content with:
 
@@ -78,7 +78,7 @@ Replace the entire file content with:
 forge-std/=lib/forge-std/src/
 ```
 
-- [ ] **Step 4: Create `shared/addresses.json`**
+- [x] **Step 4: Create `shared/addresses.json`**
 
 ```json
 {
@@ -89,7 +89,7 @@ forge-std/=lib/forge-std/src/
 }
 ```
 
-- [ ] **Step 5: Verify Foundry still builds**
+- [x] **Step 5: Verify Foundry still builds**
 
 ```bash
 forge build
@@ -104,7 +104,7 @@ Compiler run successful (with warnings)
 
 No errors. Zero source files compiled since contracts/src/ is empty — that's expected.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add foundry.toml remappings.txt shared/addresses.json
@@ -121,7 +121,7 @@ git commit -m "chore: restructure project layout for multi-layer project"
 - New submodule: `lib/openzeppelin-contracts/`
 - Modify: `foundry.lock`, `.gitmodules`
 
-- [ ] **Step 1: Install OpenZeppelin via Foundry**
+- [x] **Step 1: Install OpenZeppelin via Foundry**
 
 ```bash
 forge install OpenZeppelin/openzeppelin-contracts --no-commit
@@ -129,7 +129,7 @@ forge install OpenZeppelin/openzeppelin-contracts --no-commit
 
 Expected: Foundry clones OZ into `lib/openzeppelin-contracts/`. No git commit made.
 
-- [ ] **Step 2: Verify remapping works**
+- [x] **Step 2: Verify remapping works**
 
 Create a temporary file `contracts/src/Test.sol`:
 ```solidity
@@ -146,7 +146,7 @@ forge build
 
 Expected: Compiles successfully. Then delete `contracts/src/Test.sol`.
 
-- [ ] **Step 3: Verify .env credentials**
+- [x] **Step 3: Verify .env credentials**
 
 ```bash
 cast block latest --rpc-url $env:SEPOLIA_RPC_URL
@@ -154,7 +154,7 @@ cast block latest --rpc-url $env:SEPOLIA_RPC_URL
 
 Expected: Returns a block number (e.g. `21847392`). If it fails, the Alchemy key is expired — get a new one from dashboard.alchemy.com.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add lib/openzeppelin-contracts .gitmodules foundry.lock
@@ -169,13 +169,15 @@ git commit -m "chore: install openzeppelin-contracts v5"
 - Create: `contracts/src/NFTCollection.sol`
 - Create: `contracts/test/NFTCollection.t.sol`
 
-- [ ] **Step 1: Create the stub contract**
+- [x] **Step 1: Create the stub contract**
+> Note: Must also import `{ERC721}` explicitly — Solidity needs it in scope for the constructor init list even though ERC721URIStorage already extends it.
 
 `contracts/src/NFTCollection.sol`:
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import {ERC2981} from "@openzeppelin/contracts/token/common/ERC2981.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -212,7 +214,7 @@ contract NFTCollection is ERC721URIStorage, ERC2981, Ownable {
 }
 ```
 
-- [ ] **Step 2: Create the test file**
+- [x] **Step 2: Create the test file**
 
 `contracts/test/NFTCollection.t.sol`:
 ```solidity
@@ -303,7 +305,7 @@ contract NFTCollectionTest is Test {
 }
 ```
 
-- [ ] **Step 3: Run tests — confirm they FAIL**
+- [x] **Step 3: Run tests — confirm they FAIL**
 
 ```bash
 forge test --match-path contracts/test/NFTCollection.t.sol -v
@@ -311,7 +313,7 @@ forge test --match-path contracts/test/NFTCollection.t.sol -v
 
 Expected: Multiple FAIL results. `mintNFT` returns 0 by default (empty function body), ownership checks fail, royalty not set. Tests for stub functions that don't return anything meaningful yet.
 
-- [ ] **Step 4: Commit stub + tests**
+- [x] **Step 4: Commit stub + tests**
 
 ```bash
 git add contracts/src/NFTCollection.sol contracts/test/NFTCollection.t.sol
@@ -325,7 +327,7 @@ git commit -m "test(nft): add NFTCollection stub and failing tests"
 **Files:**
 - Modify: `contracts/src/NFTCollection.sol`
 
-- [ ] **Step 1: Implement `mintNFT` and `supportsInterface`**
+- [x] **Step 1: Implement `mintNFT` and `supportsInterface`**
 
 Replace the entire `contracts/src/NFTCollection.sol`:
 ```solidity
@@ -382,7 +384,7 @@ contract NFTCollection is ERC721URIStorage, ERC2981, Ownable {
 }
 ```
 
-- [ ] **Step 2: Run tests — confirm they all PASS**
+- [x] **Step 2: Run tests — confirm they all PASS**
 
 ```bash
 forge test --match-path contracts/test/NFTCollection.t.sol -v
@@ -405,7 +407,7 @@ Expected:
 
 All 11 tests pass.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add contracts/src/NFTCollection.sol
@@ -420,7 +422,7 @@ git commit -m "feat(contracts): implement NFTCollection with ERC2981 royalties"
 - Create: `contracts/src/CollectionFactory.sol`
 - Create: `contracts/test/CollectionFactory.t.sol`
 
-- [ ] **Step 1: Create the stub**
+- [x] **Step 1: Create the stub**
 
 `contracts/src/CollectionFactory.sol`:
 ```solidity
@@ -452,7 +454,7 @@ contract CollectionFactory {
 }
 ```
 
-- [ ] **Step 2: Create tests**
+- [x] **Step 2: Create tests**
 
 `contracts/test/CollectionFactory.t.sol`:
 ```solidity
@@ -535,7 +537,7 @@ contract CollectionFactoryTest is Test {
 }
 ```
 
-- [ ] **Step 3: Run tests — confirm FAIL**
+- [x] **Step 3: Run tests — confirm FAIL**
 
 ```bash
 forge test --match-path contracts/test/CollectionFactory.t.sol -v
@@ -543,7 +545,7 @@ forge test --match-path contracts/test/CollectionFactory.t.sol -v
 
 Expected: All tests FAIL — `createCollection` returns `address(0)`.
 
-- [ ] **Step 4: Implement `createCollection`**
+- [x] **Step 4: Implement `createCollection`**
 
 Replace `contracts/src/CollectionFactory.sol`:
 ```solidity
@@ -590,7 +592,7 @@ contract CollectionFactory {
 }
 ```
 
-- [ ] **Step 5: Run tests — confirm all PASS**
+- [x] **Step 5: Run tests — confirm all PASS**
 
 ```bash
 forge test --match-path contracts/test/CollectionFactory.t.sol -v
@@ -598,7 +600,7 @@ forge test --match-path contracts/test/CollectionFactory.t.sol -v
 
 Expected: All 8 tests pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add contracts/src/CollectionFactory.sol contracts/test/CollectionFactory.t.sol
@@ -613,7 +615,7 @@ git commit -m "feat(contracts): implement CollectionFactory"
 - Create: `contracts/src/Marketplace.sol`
 - Create: `contracts/test/Marketplace.t.sol`
 
-- [ ] **Step 1: Create the stub**
+- [x] **Step 1: Create the stub**
 
 `contracts/src/Marketplace.sol`:
 ```solidity
@@ -673,7 +675,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
 }
 ```
 
-- [ ] **Step 2: Create the test file**
+- [x] **Step 2: Create the test file**
 
 `contracts/test/Marketplace.t.sol`:
 ```solidity
@@ -984,7 +986,7 @@ contract MarketplaceTest is Test {
 }
 ```
 
-- [ ] **Step 3: Run tests — confirm FAIL**
+- [x] **Step 3: Run tests — confirm FAIL**
 
 ```bash
 forge test --match-path contracts/test/Marketplace.t.sol -v
@@ -992,7 +994,7 @@ forge test --match-path contracts/test/Marketplace.t.sol -v
 
 Expected: Most tests fail — stub functions have empty bodies.
 
-- [ ] **Step 4: Commit stub + tests**
+- [x] **Step 4: Commit stub + tests**
 
 ```bash
 git add contracts/src/Marketplace.sol contracts/test/Marketplace.t.sol
@@ -1006,7 +1008,7 @@ git commit -m "test(marketplace): add Marketplace stub and failing tests"
 **Files:**
 - Modify: `contracts/src/Marketplace.sol`
 
-- [ ] **Step 1: Implement all functions**
+- [x] **Step 1: Implement all functions**
 
 Replace the entire `contracts/src/Marketplace.sol`:
 ```solidity
@@ -1153,7 +1155,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
 }
 ```
 
-- [ ] **Step 2: Run tests — confirm all PASS**
+- [x] **Step 2: Run tests — confirm all PASS**
 
 ```bash
 forge test --match-path contracts/test/Marketplace.t.sol -v
@@ -1161,7 +1163,7 @@ forge test --match-path contracts/test/Marketplace.t.sol -v
 
 Expected: All 22 tests pass.
 
-- [ ] **Step 3: Run full test suite**
+- [x] **Step 3: Run full test suite**
 
 ```bash
 forge test -v
@@ -1169,7 +1171,7 @@ forge test -v
 
 Expected: All tests across all three files pass. Zero failures.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add contracts/src/Marketplace.sol
@@ -1183,7 +1185,7 @@ git commit -m "feat(contracts): implement Marketplace with royalties and pull pa
 **Files:**
 - Create: `contracts/test/Integration.t.sol`
 
-- [ ] **Step 1: Create the integration test**
+- [x] **Step 1: Create the integration test**
 
 `contracts/test/Integration.t.sol`:
 ```solidity
@@ -1300,7 +1302,7 @@ contract IntegrationTest is Test {
 }
 ```
 
-- [ ] **Step 2: Run integration tests**
+- [x] **Step 2: Run integration tests**
 
 ```bash
 forge test --match-path contracts/test/Integration.t.sol -v
@@ -1308,7 +1310,7 @@ forge test --match-path contracts/test/Integration.t.sol -v
 
 Expected: Both tests pass.
 
-- [ ] **Step 3: Run complete suite + gas report**
+- [x] **Step 3: Run complete suite + gas report**
 
 ```bash
 forge test --gas-report
@@ -1316,7 +1318,7 @@ forge test --gas-report
 
 Expected: All tests pass. Review gas costs — `buyNFT` should be under 150k gas.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add contracts/test/Integration.t.sol
@@ -1332,7 +1334,7 @@ git commit -m "test(contracts): add end-to-end integration test"
 - Modify: `shared/addresses.json`
 - Create: `shared/abis/NFTCollection.json`, `CollectionFactory.json`, `Marketplace.json`
 
-- [ ] **Step 1: Create deploy script**
+- [x] **Step 1: Create deploy script**
 
 `contracts/script/DeployAll.s.sol`:
 ```solidity
@@ -1372,7 +1374,7 @@ contract DeployAll is Script {
 }
 ```
 
-- [ ] **Step 2: Dry-run locally with Anvil**
+- [x] **Step 2: Dry-run locally with Anvil**
 
 In one terminal, start a local node:
 ```bash
@@ -1391,7 +1393,7 @@ Expected: Script runs, logs two contract addresses, writes `shared/addresses.jso
 
 Verify `shared/addresses.json` now has addresses. Stop Anvil.
 
-- [ ] **Step 3: Export ABIs**
+- [x] **Step 3: Export ABIs**
 
 ```bash
 forge build
@@ -1403,7 +1405,7 @@ forge inspect contracts/src/Marketplace.sol:Marketplace abi > shared/abis/Market
 
 Expected: Three JSON files created in `shared/abis/`. Each contains an array of ABI entries.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add contracts/script/DeployAll.s.sol shared/abis/
@@ -1417,7 +1419,7 @@ git commit -m "feat(contracts): add deploy script and export ABIs"
 **Files:**
 - Modify: `shared/addresses.json` (auto-updated by script)
 
-- [ ] **Step 1: Deploy to Sepolia**
+- [x] **Step 1: Deploy to Sepolia**
 
 > Note: Run these in Git Bash (not PowerShell) — backslash line continuation is bash syntax. Or paste as one line in PowerShell.
 
@@ -1439,7 +1441,7 @@ Both contracts verified on Sepolia Etherscan automatically.
 
 If `--verify` fails (sometimes it times out), verify manually in Step 2.
 
-- [ ] **Step 2: (If needed) Manual Etherscan verification**
+- [x] **Step 2: (If needed) Manual Etherscan verification**
 
 ```bash
 forge verify-contract <FACTORY_ADDRESS> \
@@ -1456,7 +1458,7 @@ forge verify-contract <MARKETPLACE_ADDRESS> \
 
 > Run in Git Bash. Replace `<FACTORY_ADDRESS>`, `<MARKETPLACE_ADDRESS>`, `<DEPLOYER_ADDRESS>` with actual values from `shared/addresses.json` and your wallet address.
 
-- [ ] **Step 3: Confirm on Etherscan**
+- [x] **Step 3: Confirm on Etherscan**
 
 Open these URLs in browser:
 - `https://sepolia.etherscan.io/address/<FACTORY_ADDRESS>#code`
@@ -1464,7 +1466,7 @@ Open these URLs in browser:
 
 Both should show "Contract" tab with verified source code (green checkmark).
 
-- [ ] **Step 4: Smoke test deployed contracts**
+- [x] **Step 4: Smoke test deployed contracts**
 
 ```bash
 # Check factory on Sepolia
@@ -1478,14 +1480,14 @@ Expected:
 - Factory returns `[]` (no collections yet)
 - Marketplace returns `200`
 
-- [ ] **Step 5: Commit final state**
+- [x] **Step 5: Commit final state**
 
 ```bash
 git add shared/addresses.json
 git commit -m "deploy: contracts live on Sepolia"
 ```
 
-- [ ] **Step 6: Update CLAUDE.md with deployed addresses**
+- [x] **Step 6: Update CLAUDE.md with deployed addresses**
 
 Edit `CLAUDE.md` — fill in the Deployed Contract Addresses section with the actual addresses from `shared/addresses.json`.
 
@@ -1498,15 +1500,15 @@ git commit -m "docs: update CLAUDE.md with Sepolia contract addresses"
 
 ## Completion Checklist
 
-- [ ] All 3 contracts implemented and compiling
-- [ ] NFTCollection: 11 unit tests passing
-- [ ] CollectionFactory: 8 unit tests passing
-- [ ] Marketplace: 22 unit tests passing
-- [ ] Integration: 2 end-to-end tests passing
-- [ ] `forge test --gas-report` shows no failures
-- [ ] `shared/addresses.json` has real Sepolia addresses
-- [ ] `shared/abis/` has 3 ABI files
-- [ ] Both contracts verified on Sepolia Etherscan
-- [ ] `cast call` smoke tests pass against live Sepolia
+- [x] All 3 contracts implemented and compiling
+- [x] NFTCollection: 11 unit tests passing
+- [x] CollectionFactory: 8 unit tests passing
+- [x] Marketplace: 22 unit tests passing (25 actual)
+- [x] Integration: 2 end-to-end tests passing
+- [x] `forge test --gas-report` shows no failures
+- [x] `shared/addresses.json` has real Sepolia addresses
+- [x] `shared/abis/` has 3 ABI files
+- [x] Both contracts verified on Sepolia Etherscan
+- [x] `cast call` smoke tests pass against live Sepolia
 
 **Next plan:** `2026-05-23-phase-2-backend-indexer.md` (write when ready to start Phase 2)
