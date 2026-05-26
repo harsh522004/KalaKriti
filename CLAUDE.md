@@ -166,6 +166,54 @@ Etherscan:
 
 ---
 
+## Neon MCP Usage
+
+The Neon MCP is configured globally and available as `mcp__Neon__*` tools.
+
+### Permission rules
+- **Read-only tools — use freely, no user confirmation needed:**
+  - `mcp__Neon__list_projects`, `mcp__Neon__describe_project`
+  - `mcp__Neon__get_database_tables`, `mcp__Neon__describe_table_schema`
+  - `mcp__Neon__run_sql` (SELECT queries only)
+  - `mcp__Neon__get_connection_string`
+  - `mcp__Neon__list_branch_computes`, `mcp__Neon__describe_branch`
+  - `mcp__Neon__list_slow_queries`, `mcp__Neon__explain_sql_statement`
+- **Write / mutating tools — always ask user first:**
+  - `mcp__Neon__run_sql` with INSERT / UPDATE / DELETE
+  - `mcp__Neon__run_sql_transaction`
+  - `mcp__Neon__prepare_database_migration`, `mcp__Neon__complete_database_migration`
+  - `mcp__Neon__create_branch`, `mcp__Neon__delete_branch`
+  - `mcp__Neon__create_project`
+- **NEVER run under any circumstances:**
+  - `mcp__Neon__delete_project`
+
+### Project reference
+| Key | Value |
+|---|---|
+| Project name | KalaKriti |
+| Project ID | `rough-union-67203035` |
+| Database | `neondb` |
+| Region | `aws-ap-southeast-1` |
+| PG version | 18 |
+
+### Quick-reference commands
+
+```typescript
+// List tables
+mcp__Neon__get_database_tables({ projectId: 'rough-union-67203035' })
+
+// Inspect a table
+mcp__Neon__describe_table_schema({ projectId: 'rough-union-67203035', tableName: 'Collection' })
+
+// Run a SELECT
+mcp__Neon__run_sql({ projectId: 'rough-union-67203035', sql: 'SELECT * FROM "Collection" LIMIT 10;' })
+
+// Get connection string
+mcp__Neon__get_connection_string({ projectId: 'rough-union-67203035' })
+```
+
+---
+
 ## Mistakes & Lessons Learned
 
 _Updated as we build. Empty for now — first entry goes here when we hit our first real mistake._
