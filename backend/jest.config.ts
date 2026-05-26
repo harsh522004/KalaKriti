@@ -3,4 +3,5 @@ export default {
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.test.ts'],
   clearMocks: true,
+  setupFiles: ['./jest.setup.ts'],
 };
