@@ -9,7 +9,7 @@ import Marketplace from '@/pages/Marketplace';
 import Collections from '@/pages/Collections';
 import CollectionDetail from '@/pages/CollectionDetail';
 import Mint from '@/pages/Mint';
-const Profile         = () => <div className="p-8 text-gold font-serif text-4xl">Profile</div>;
+import Profile from '@/pages/Profile';
 import NFTDetail from '@/pages/NFTDetail';
 
 
