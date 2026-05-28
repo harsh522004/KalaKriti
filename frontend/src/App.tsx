@@ -3,13 +3,15 @@ import { AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/layout/Navbar';
 import NetworkBanner from '@/components/layout/NetworkBanner';
 import Footer from '@/components/layout/Footer';
+import Marketplace from '@/pages/Marketplace';
 
-const Marketplace     = () => <div className="p-8 text-gold font-serif text-4xl">Marketplace</div>;
+
 const Collections     = () => <div className="p-8 text-gold font-serif text-4xl">Collections</div>;
 const CollectionDetail = () => <div className="p-8 text-gold font-serif text-4xl">Collection Detail</div>;
 const Mint            = () => <div className="p-8 text-gold font-serif text-4xl">Mint</div>;
 const Profile         = () => <div className="p-8 text-gold font-serif text-4xl">Profile</div>;
 const NFTDetail       = () => <div className="p-8 text-gold font-serif text-4xl">NFT Detail</div>;
+
 
 export default function App() {
   return (
