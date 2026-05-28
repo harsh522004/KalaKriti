@@ -1,9 +1,32 @@
 import { Routes, Route } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import Navbar from '@/components/layout/Navbar';
+import NetworkBanner from '@/components/layout/NetworkBanner';
+import Footer from '@/components/layout/Footer';
+
+const Marketplace     = () => <div className="p-8 text-gold font-serif text-4xl">Marketplace</div>;
+const Collections     = () => <div className="p-8 text-gold font-serif text-4xl">Collections</div>;
+const CollectionDetail = () => <div className="p-8 text-gold font-serif text-4xl">Collection Detail</div>;
+const Mint            = () => <div className="p-8 text-gold font-serif text-4xl">Mint</div>;
+const Profile         = () => <div className="p-8 text-gold font-serif text-4xl">Profile</div>;
+const NFTDetail       = () => <div className="p-8 text-gold font-serif text-4xl">NFT Detail</div>;
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<div className="text-gold p-8 font-serif text-5xl">KalaKriti</div>} />
-    </Routes>
+    <div className="bg-bg min-h-screen">
+      <Navbar />
+      <NetworkBanner />
+      <AnimatePresence mode="wait">
+        <Routes>
+          <Route path="/"                         element={<Marketplace />} />
+          <Route path="/collections"              element={<Collections />} />
+          <Route path="/collections/:address"     element={<CollectionDetail />} />
+          <Route path="/mint"                     element={<Mint />} />
+          <Route path="/profile"                  element={<Profile />} />
+          <Route path="/nft/:collection/:tokenId" element={<NFTDetail />} />
+        </Routes>
+      </AnimatePresence>
+      <Footer />
+    </div>
   );
 }
