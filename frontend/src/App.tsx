@@ -8,7 +8,7 @@ import Marketplace from '@/pages/Marketplace';
 
 import Collections from '@/pages/Collections';
 import CollectionDetail from '@/pages/CollectionDetail';
-const Mint            = () => <div className="p-8 text-gold font-serif text-4xl">Mint</div>;
+import Mint from '@/pages/Mint';
 const Profile         = () => <div className="p-8 text-gold font-serif text-4xl">Profile</div>;
 import NFTDetail from '@/pages/NFTDetail';
 
