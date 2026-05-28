@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 interface Props {
   open: boolean;
