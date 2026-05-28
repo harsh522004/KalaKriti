@@ -6,8 +6,8 @@ import Footer from '@/components/layout/Footer';
 import Marketplace from '@/pages/Marketplace';
 
 
-const Collections     = () => <div className="p-8 text-gold font-serif text-4xl">Collections</div>;
-const CollectionDetail = () => <div className="p-8 text-gold font-serif text-4xl">Collection Detail</div>;
+import Collections from '@/pages/Collections';
+import CollectionDetail from '@/pages/CollectionDetail';
 const Mint            = () => <div className="p-8 text-gold font-serif text-4xl">Mint</div>;
 const Profile         = () => <div className="p-8 text-gold font-serif text-4xl">Profile</div>;
 const NFTDetail       = () => <div className="p-8 text-gold font-serif text-4xl">NFT Detail</div>;
