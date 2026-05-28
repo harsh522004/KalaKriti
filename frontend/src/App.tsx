@@ -10,7 +10,7 @@ import Collections from '@/pages/Collections';
 import CollectionDetail from '@/pages/CollectionDetail';
 const Mint            = () => <div className="p-8 text-gold font-serif text-4xl">Mint</div>;
 const Profile         = () => <div className="p-8 text-gold font-serif text-4xl">Profile</div>;
-const NFTDetail       = () => <div className="p-8 text-gold font-serif text-4xl">NFT Detail</div>;
+import NFTDetail from '@/pages/NFTDetail';
 
 
 export default function App() {
