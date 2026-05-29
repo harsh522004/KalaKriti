@@ -220,6 +220,45 @@ _Updated as we build. Empty for now — first entry goes here when we hit our fi
 
 ---
 
+## Completed Phases
+
+| Phase | Description | Status |
+|---|---|---|
+| Phase 0 | Foundation — repo setup, Foundry config, OZ install, shared/ structure | ✅ Done |
+| Phase 1 | Smart Contracts — CollectionFactory, NFTCollection, Marketplace + Foundry tests | ✅ Done |
+| Phase 2 | Backend Indexer — Express + Prisma + PostgreSQL + viem event listeners | ✅ Done |
+| Phase 3 | Frontend — Vite + React + wagmi + RainbowKit + all pages + IPFS mint | ✅ Done |
+| Phase 4 | Polish + Deploy — error handling, Vercel + Railway deploy, E2E Sepolia test | 🔜 Next |
+
+---
+
 ## Current Phase
 
-**Phase 1 (Contracts) complete. Next: Phase 2 — Backend Indexer**
+**Phase 3 (Frontend) complete. In local testing before Phase 4.**
+Issues found during testing → `docs/development/Issues.md`
+All code changes during testing → `docs/development/changesLogs.md`
+
+---
+
+## Development Workflow — Testing & Fixes
+
+After each phase, test locally before moving on. During that testing period:
+
+### Issues Log → `docs/development/Issues.md`
+
+Log every bug or problem found with three fields:
+
+- **Observation** — what was seen (plain language, no jargon)
+- **Root Cause** — why it happened (one or two simple sentences — write it so a non-developer can follow)
+- **Solution** — the fix applied or the best approach chosen
+
+**Language rule:** Keep root cause and observation simple. Avoid dense technical paragraphs.
+
+### Changes Log → `docs/development/changesLogs.md`
+
+Record every code change made during testing or issue resolution:
+- Date
+- File(s) changed
+- What changed and why (one line per change)
+
+This covers both bug fixes and small improvements made during the testing phase.
