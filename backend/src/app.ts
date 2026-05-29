@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
 import collectionsRouter from './routes/collections';
 import nftsRouter from './routes/nfts';
 import listingsRouter from './routes/listings';
@@ -6,6 +7,7 @@ import activitiesRouter from './routes/activities';
 
 export const app = express();
 
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
 // Serialize BigInt values as strings in JSON responses
